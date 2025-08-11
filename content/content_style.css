@@ -44,6 +44,7 @@
   
   /* 2. 處理垂直方向的溢出 */
   overflow-y: auto;  /* 當內容高度超過 max-height 時，自動顯示垂直滾動條 */
+  
 }
 
 .loading-indicator {

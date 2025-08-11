@@ -24,7 +24,7 @@ function showTranslationPanel(initialContent) {
   translatedPanel.id = 'gemini-translation-panel';
   translatedPanel.innerHTML = `
     <div class="panel-header">
-      <span>Daifuku Transaltor</span>
+      <span>Daifuku Translator</span>
       <button class="close-btn">&times;</button>
     </div>
     <div class="panel-body"> 
@@ -50,11 +50,13 @@ function updatePanelContent(htmlContent) {
   const panelBody = translatedPanel.querySelector('.panel-body');
   if (panelBody) {
     // 替換換行符，並可以加入一個載入中的 CSS class
-    // 為了簡化，我們先用 "..." 作為載入中的標識
     if (htmlContent === "等待回應中...") {
         panelBody.innerHTML = `<div class="loading-indicator">${htmlContent}</div>`;
     } else {
-        panelBody.innerHTML = htmlContent.replace(/\n/g, '<br>');
+        // 使用 DOMPurify 清理來自 API 的內容
+        const cleanHtml = DOMPurify.sanitize(htmlContent.replace(/\n/g, '<br>'));
+        // 將清理過的、安全的 HTML 賦值給 innerHTML
+        panelBody.innerHTML = cleanHtml;
     }
   }
 }

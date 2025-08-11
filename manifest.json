@@ -1,12 +1,12 @@
 {
   "manifest_version": 2,
-  "name": "LLM翻譯器",
-  "version": "0.1.0",
+  "name": "Daifuku Translator",
+  "version": "0.2.0",
   "description": "選取文字後使用LLM進行翻譯。",
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "LLM_translator@JaniceC001",
+      "id": "Daifuku_Translator@JaniceC001",
       "strict_min_version": "113.0"
     }
   },
@@ -27,7 +27,10 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content/content_script.js"],
+      "js": [
+        "libs/purify.min.js",
+        "content/content_script.js"
+      ],
       "css": ["content/content_style.css"]
     }
   ],
@@ -40,9 +43,8 @@
 
     "browser_action": {
     "default_icon": {
-        "48": "icons/icon.png"
+        "512": "icons/icon.png"
     },
     "default_title": "Gemini 翻譯"
     }
-
 }

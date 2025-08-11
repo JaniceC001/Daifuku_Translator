@@ -1,1 +1,1 @@
-# Daifuku_Transaltor
+# Daifuku_Translator
