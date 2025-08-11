@@ -1,0 +1,52 @@
+#gemini-translation-panel {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 350px; /* 可以稍微加寬一點 */
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  z-index: 999999;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  display: flex; /* 使用 Flexbox 佈局，方便控制內部結構 */
+  flex-direction: column; /* 讓 header 和 body 垂直排列 */
+  /* 不要在這裡設定固定的 height */
+}
+
+.panel-header {
+  padding: 8px 12px;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  flex-shrink: 0; /* 防止 header 在空間不足時被壓縮 */
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #888;
+}
+
+/* --- 【這裡是關鍵修改】 --- */
+.panel-body {
+  padding: 12px; /* 增加一些內邊距，讓文字不貼邊 */
+  line-height: 1.6; /* 增加行高，提升可讀性 */
+  
+  /* 1. 設定一個最大高度 */
+  max-height: 400px; /* 例如，最多長到 400 像素高 */
+  
+  /* 2. 處理垂直方向的溢出 */
+  overflow-y: auto;  /* 當內容高度超過 max-height 時，自動顯示垂直滾動條 */
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-style: italic;
+}
