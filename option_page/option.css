@@ -1,0 +1,9 @@
+.model-settings {
+  display: none; /* 預設所有模型的設定都隱藏 */
+  border-left: 3px solid #ccc;
+  padding-left: 15px;
+  margin-bottom: 15px;
+}
+hr {
+  margin: 20px 0;
+}

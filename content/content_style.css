@@ -4,6 +4,7 @@
   right: 20px;
   width: 350px; /* 可以稍微加寬一點 */
   background-color: #ffffff;
+  color: black;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   z-index: 999999;
@@ -16,6 +17,7 @@
 .panel-header {
   padding: 8px 12px;
   background-color: #f7f7f7;
+  color: black;
   border-bottom: 1px solid #e0e0e0;
   display: flex;
   justify-content: space-between;

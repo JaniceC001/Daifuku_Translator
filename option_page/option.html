@@ -5,20 +5,43 @@
   <link rel="stylesheet" href="option.css">
 </head>
 <body>
+    <h1>Daifuku Translator 設定</h1>
 
-    <h1>Gemini 翻譯設定</h1>
-    
     <div class="form-group">
-        <label for="apiKey">Gemini API Key:</label>
-        <input type="password" id="apiKey" size="50"> 
-        <!-- 用 password 類型隱藏 Key -->
+        <label for="selectedModel">選擇 AI 模型:</label>
+        <select id="selectedModel">
+        <option value="gemini">Google Gemini 2.0 Flash</option>
+        <option value="mistral">mistral-large-2411</option>
+        </select>
     </div>
+
+    <hr>
+
+    <!-- Gemini 設定區塊 -->
+    <div id="gemini-settings" class="model-settings">
+        <h3>Gemini 設定</h3>
+        <div class="form-group">
+        <label for="geminiApiKey">Gemini API Key:</label>
+        <input type="password" id="geminiApiKey" size="50">
+        </div>
+    </div>
+
+    <!-- Mistral 設定區塊 -->
+    <div id="mistral-settings" class="model-settings">
+        <h3>Mistral 設定</h3>
+        <div class="form-group">
+        <label for="mistralApiKey">Mistral API Key:</label>
+        <input type="password" id="mistralApiKey" size="50">
+        </div>
+    </div>
+
+    <hr>
 
     <div class="form-group">
         <label for="promptTemplate">自訂 Prompt 範本:</label>
         <textarea id="promptTemplate" rows="8" cols="50"></textarea>
         <p class="help-text">
-        請使用 <code>{text}</code> 作為預留位置，它將被替換為您選取的文字。
+        使用 <code>{text}</code> 作為預留位置。
         </p>
     </div>
 

@@ -24,7 +24,7 @@ function showTranslationPanel(initialContent) {
   translatedPanel.id = 'gemini-translation-panel';
   translatedPanel.innerHTML = `
     <div class="panel-header">
-      <span>Gemini 翻譯</span>
+      <span>Daifuku Transaltor</span>
       <button class="close-btn">&times;</button>
     </div>
     <div class="panel-body"> 
