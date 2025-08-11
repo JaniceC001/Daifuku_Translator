@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Daifuku Translator",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "選取文字後使用LLM進行翻譯。",
 
   "browser_specific_settings": {
@@ -45,6 +45,6 @@
     "default_icon": {
         "512": "icons/icon.png"
     },
-    "default_title": "Gemini 翻譯"
+    "default_title": "Daifuku_Translator"
     }
 }

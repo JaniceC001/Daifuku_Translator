@@ -8,7 +8,7 @@ const saveButton = document.getElementById('saveButton');
 const statusDiv = document.getElementById('status');
 
 // 定義一個預設的 Prompt，當使用者還沒有設定時使用
-const DEFAULT_PROMPT = `請將以下文字翻譯成繁體中文，並提供1到2種不同的翻譯風格或選項，不要總結:\n\n---\n{text}\n---`;
+const DEFAULT_PROMPT = `請將以下文字翻譯成繁體中文，不要總結:\n\n---\n{text}\n---`;
 
 // 根據選擇的LLM顯示對應的設定區塊
 function showRelevantSettings() {

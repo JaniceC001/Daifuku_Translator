@@ -1,5 +1,5 @@
 // 預設 Prompt
-const DEFAULT_PROMPT_BG = `請將以下文字翻譯成繁體中文，並提供1到2種不同的翻譯風格或選項，不要總結::\n\n---\n{text}\n---`;
+const DEFAULT_PROMPT_BG = `請將以下文字翻譯成繁體中文，不要總結::\n\n---\n{text}\n---`;
 
 // 在擴充功能安裝或更新時，建立右鍵選單
 browser.runtime.onInstalled.addListener(() => {
