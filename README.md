@@ -4,7 +4,7 @@
 目前只支援Firefox, 電腦與Android皆可使用(Android需要使用開發者模式)
 
 ### PC
-1. 下載xpi檔案
+1. 下載xpi檔案，下載連結：[release](https://github.com/JaniceC001/Daifuku_Translator/tree/39e0b3c3864b39dc86d7675b0340317c4225e968/release)
 2. 在Firefox瀏覽器的`about:addons`裡, 選擇`從檔案安裝附加元件`
 3. 選擇剛剛下載的xpi檔案
 4. 點選Daifuku Trasnlator的圖示 或 在`管理附加元件`中選擇`選項`打開 設定頁面
