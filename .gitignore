@@ -15,7 +15,7 @@ yarn-error.log*
 /web-ext-artifacts/
 # 手動打包的檔案
 *.zip
-*.xpi
+
 
 # 忽略作業系統產生的檔案
 # macOS
