@@ -12,6 +12,7 @@
         <select id="selectedModel">
         <option value="gemini">Google Gemini 2.0 Flash</option>
         <option value="mistral">mistral-large-2411</option>
+        <!-- <option value="mistral">mistral-small-lastest</option> -->
         </select>
     </div>
 
@@ -48,6 +49,20 @@
                 <input type="radio" name="buttonPosition" value="bottom-right">
                 右下角
             </label>
+        </div>
+    </div>
+
+    <hr>
+    <div class="form-group">
+        <label>翻譯面板大小 (單位: 像素 px):</label>
+        <div id="panel-size-options">
+        <label for="panelWidth">寬度:</label>
+        <input type="number" id="panelWidth" min="250" max="800" step="10">
+        
+        <label for="panelMaxHeight">最大高度:</label>
+        <input type="number" id="panelMaxHeight" min="200" max="1000" step="10">
+
+        <button id="resetSizeButton" type="button">重設為預設值</button>
         </div>
     </div>
 

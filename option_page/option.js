@@ -6,10 +6,18 @@ const mistralApiKeyInput = document.getElementById('mistralApiKey');
 const promptTextarea = document.getElementById('promptTemplate');
 const saveButton = document.getElementById('saveButton');
 const positionRadios = document.querySelectorAll('input[name="buttonPosition"]');
+const panelWidthInput = document.getElementById('panelWidth');
+const panelMaxHeightInput = document.getElementById('panelMaxHeight');
+const resetSizeButton = document.getElementById('resetSizeButton');
 const statusDiv = document.getElementById('status');
 
 // 定義一個預設的 Prompt，當使用者還沒有設定時使用
 const DEFAULT_PROMPT = `請將以下文字翻譯成繁體中文，不要總結:\n\n---\n{text}\n---`;
+
+//預設PANEL尺寸
+const DEFAULT_PANEL_WIDTH = 350;
+const DEFAULT_PANEL_MAX_HEIGHT = 400;
+
 
 // 根據選擇的LLM顯示對應的設定區塊
 function showRelevantSettings() {
@@ -24,12 +32,18 @@ function loadSettings() {
     'selectedModel',
     'geminiApiKey',
     'mistralApiKey',
-    'userPrompt'
+    'userPrompt',
+    'buttonPosition',
+    'panelWidth',       // 【新增】
+    'panelMaxHeight'
   ]).then(res => {
     modelSelector.value = res.selectedModel || 'gemini'; // 預設選 Gemini
     geminiApiKeyInput.value = res.geminiApiKey || '';
     mistralApiKeyInput.value = res.mistralApiKey || '';
-    promptTextarea.value = res.userPrompt || DEFAULT_PROMPT;
+    promptTextarea.value = res.userPrompt || DEFAULT_PROMPT;  //prompt
+    //面板尺寸設定
+    panelWidthInput.value = res.panelWidth || DEFAULT_PANEL_WIDTH;
+    panelMaxHeightInput.value = res.panelMaxHeight || DEFAULT_PANEL_MAX_HEIGHT;
     
     const savedPosition = res.buttonPosition || 'bottom-right'; // 預設為 'bottom-right'
     for (const radio of positionRadios) {
@@ -58,7 +72,10 @@ function saveSettings() {
     geminiApiKey: geminiApiKeyInput.value,
     mistralApiKey: mistralApiKeyInput.value,
     userPrompt: promptTextarea.value,
-    buttonPosition: selectedPosition
+    buttonPosition: selectedPosition,
+    panelWidth: parseInt(panelWidthInput.value, 10) || DEFAULT_PANEL_WIDTH,
+    panelMaxHeight: parseInt(panelMaxHeightInput.value, 10) || DEFAULT_PANEL_MAX_HEIGHT
+    // 使用 parseInt 確保儲存的是數字
   };
 
   if (!settings.userPrompt.includes('{text}')) {
@@ -71,6 +88,14 @@ function saveSettings() {
     setTimeout(() => statusDiv.textContent = '', 2000);
   });
 }
+
+// 重設按鈕的事件監聽
+resetSizeButton.addEventListener('click', () => {
+  panelWidthInput.value = DEFAULT_PANEL_WIDTH;
+  panelMaxHeightInput.value = DEFAULT_PANEL_MAX_HEIGHT;
+  // 提示使用者需要儲存
+  statusDiv.textContent = '已重設為預設值，請點擊儲存。';
+});
 
 // 事件監聽
 modelSelector.addEventListener('change', showRelevantSettings);

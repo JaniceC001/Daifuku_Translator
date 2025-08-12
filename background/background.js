@@ -6,7 +6,7 @@ browser.runtime.onInstalled.addListener(() => {
   if (browser.contextMenus && browser.contextMenus.create) {
     browser.contextMenus.create({
       id: "translate-selection",
-      title: "使用 Gemini 翻譯",
+      title: "使用Daifuku Translator",
       contexts: ["selection"]
     });
   } else {

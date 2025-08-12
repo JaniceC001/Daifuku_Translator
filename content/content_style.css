@@ -2,7 +2,7 @@
   position: fixed;
   top: 20px;
   right: 20px;
-  width: 350px; /* 可以稍微加寬一點 */
+  /*width: 350px; 可以稍微加寬一點 */
   background-color: #ffffff;
   color: black;
   border: 1px solid #e0e0e0;
@@ -54,8 +54,8 @@
   padding: 12px; /* 增加一些內邊距，讓文字不貼邊 */
   line-height: 1.6; /* 增加行高，提升可讀性 */
   
-  /* 1. 設定一個最大高度 */
-  max-height: 400px; /* 例如，最多長到 400 像素高 */
+  /*最大高度 */
+  /*max-height: 400px; */
   
   /* 2. 處理垂直方向的溢出 */
   overflow-y: auto;  /* 當內容高度超過 max-height 時，自動顯示垂直滾動條 */

@@ -89,17 +89,30 @@ function hideFloatingButton() {
 
 // 顯示翻譯結果的面板
 // 建立並顯示面板的函式 (只在第一次創建時呼叫)
-function showTranslationPanel(initialContent) {
+async function showTranslationPanel(initialContent) {
   
   console.log("成功呼叫Panel，初始內容是:", initialContent);
   // 如果已有面板，先移除
   if (translatedPanel) {
     translatedPanel.remove();
   }
+
+  // 獲取尺寸設定
+  const { panelWidth, panelMaxHeight } = await browser.storage.sync.get([
+    'panelWidth', 
+    'panelMaxHeight'
+  ]);
+
+  // 設定預設值
+  const width = panelWidth || 350;
+  const maxHeight = panelMaxHeight || 400;
   
   // 建立面板 DOM
   translatedPanel = document.createElement('div');
   translatedPanel.id = 'gemini-translation-panel';
+  // 4. 將尺寸設定應用為 inline style
+  translatedPanel.style.width = `${width}px`;
+
   translatedPanel.innerHTML = `
     <div class="panel-header">
       <span>Daifuku Translator</span>
@@ -109,6 +122,13 @@ function showTranslationPanel(initialContent) {
         <!-- 內容將由 JS 動態填入 --> 
     </div>
   `;
+
+  // 為 panel-body 設定 max-height
+  const panelBody = translatedPanel.querySelector('.panel-body');
+  if (panelBody) {
+    panelBody.style.maxHeight = `${maxHeight}px`;
+  }
+
   document.body.appendChild(translatedPanel);
 
   //呼叫Update填入初始內容
