@@ -1,7 +1,16 @@
 # Daifuku_Translator
-
-## 安裝&使用方法
 目前只支援Firefox, 電腦與Android皆可使用(Android需要使用開發者模式)
+
+## 使用方法
+選取文字後使用LLM進行翻譯
+
+需要在【管理擴充元件-選項】或點選Daifuku Translator圖示進入設定頁面，設定API key
+
+Android：選取文字後出現【翻譯】的懸浮按鈕，按下即可翻譯。
+
+PC：選取文字後可以右鍵開啟選單，選擇【使用Daifuku Translator】或 使用懸浮按鈕翻譯。
+
+## 安裝&初始設定
 
 ### PC
 1. 下載xpi檔案，下載連結：[release](https://github.com/JaniceC001/Daifuku_Translator/tree/39e0b3c3864b39dc86d7675b0340317c4225e968/release)
