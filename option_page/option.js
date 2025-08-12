@@ -23,7 +23,9 @@ const DEFAULT_PANEL_MAX_HEIGHT = 400;
 function showRelevantSettings() {
   const selected = modelSelector.value;
   geminiSettings.style.display = (selected === 'gemini') ? 'block' : 'none';
-  mistralSettings.style.display = (selected === 'mistral') ? 'block' : 'none';
+  // 無論是選擇 large 還是 small，都顯示同一個 Mistral 設定區塊
+  const isMistral = selected.startsWith('mistral'); // 使用 startsWith 判斷
+  mistralSettings.style.display = isMistral ? 'block' : 'none';
 }
 
 // 頁面載入時，讀取所有設定

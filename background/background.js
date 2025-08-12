@@ -33,10 +33,13 @@ async function startTranslation(textToTranslate, tab) {
     translatedText = settings.geminiApiKey
       ? await callGeminiApi(finalPrompt, settings.geminiApiKey)
       : '錯誤：請在設定頁面輸入您的 Gemini API Key。';
-  } else if (model === 'mistral') {
-    translatedText = settings.mistralApiKey
-      ? await callMistralApi(finalPrompt, settings.mistralApiKey)
-      : '錯誤：請在設定頁面輸入您的 Mistral API Key。';
+  } else if (model.startsWith('mistral')) {
+    if (!settings.mistralApiKey) {
+        translatedText = '錯誤：請在設定頁面輸入您的 Mistral API Key。';
+      } else {
+        // 將完整的模型值 ( "mistral-large-2411") 傳遞給 API 函式
+        translatedText = await callMistralApi(finalPrompt, settings.mistralApiKey, model);
+      }
   }
 
   browser.tabs.sendMessage(tab.id, {
@@ -95,8 +98,8 @@ async function callGeminiApi(prompt, apiKey) {
   }
 }
 
-// --- 【新增 Mistral API 函式】 ---
-async function callMistralApi(prompt, apiKey) {
+// Mistral API
+async function callMistralApi(prompt, apiKey, modelId) {
   const API_URL = 'https://api.mistral.ai/v1/chat/completions';
   
   try {
@@ -108,7 +111,7 @@ async function callMistralApi(prompt, apiKey) {
         'Authorization': `Bearer ${apiKey}` // Mistral 使用 Bearer Token
       },
       body: JSON.stringify({
-        model: 'mistral-large-2411', // 或者其他模型
+        model: modelId, // 或者其他模型
         messages: [{ role: 'user', content: prompt }]
       })
     });

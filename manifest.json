@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Daifuku Translator",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "選取文字後使用LLM進行翻譯。",
 
   "browser_specific_settings": {
