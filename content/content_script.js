@@ -36,7 +36,7 @@ document.addEventListener('mousedown', (event) => {
 });
 
 //建立和顯示懸浮按鈕
-function showFloatingButton(selection) {
+async function showFloatingButton(selection) {
   if (!floatingButton) {
     // 如果按鈕不存在，就建立它
     floatingButton = document.createElement('div');
@@ -60,13 +60,22 @@ function showFloatingButton(selection) {
     });
   }
 
+  const { buttonPosition } = await browser.storage.sync.get('buttonPosition');
+  const position = buttonPosition || 'bottom-right'; // 如果未設定，預設為右上角
+
   // 計算按鈕位置
   const range = selection.getRangeAt(0);
   const rect = range.getBoundingClientRect();
   
   // 將按鈕定位在選取範圍的右上角
-  floatingButton.style.top = `${window.scrollY + rect.top - 30}px`; // 往上偏移30px
-  floatingButton.style.left = `${window.scrollX + rect.right}px`;
+  if (position === 'top-right'){
+    floatingButton.style.top = `${window.scrollY + rect.top - 30}px`; // 往上偏移30px
+    floatingButton.style.left = `${window.scrollX + rect.right}px`;
+  } else if (position === 'bottom-right'){
+    //右下角
+    floatingButton.style.top = `${window.scrollY + rect.bottom + 5}px`;
+    floatingButton.style.left = `${window.scrollX + rect.right - 15}px`;
+  }
   floatingButton.style.display = 'block';
 }
 

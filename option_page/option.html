@@ -38,6 +38,22 @@
     <hr>
 
     <div class="form-group">
+        <label>懸浮按鈕位置:</label>
+        <div id="button-position-options">
+            <label>
+                <input type="radio" name="buttonPosition" value="top-right" checked> <!-- 'checked' 設置預設選項 -->
+                右上角
+            </label>
+            <label>
+                <input type="radio" name="buttonPosition" value="bottom-right">
+                右下角
+            </label>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="form-group">
         <label for="promptTemplate">自訂 Prompt 範本:</label>
         <textarea id="promptTemplate" rows="8" cols="50"></textarea>
         <p class="help-text">

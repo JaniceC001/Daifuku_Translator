@@ -5,6 +5,7 @@ const geminiApiKeyInput = document.getElementById('geminiApiKey');
 const mistralApiKeyInput = document.getElementById('mistralApiKey');
 const promptTextarea = document.getElementById('promptTemplate');
 const saveButton = document.getElementById('saveButton');
+const positionRadios = document.querySelectorAll('input[name="buttonPosition"]');
 const statusDiv = document.getElementById('status');
 
 // 定義一個預設的 Prompt，當使用者還沒有設定時使用
@@ -30,6 +31,13 @@ function loadSettings() {
     mistralApiKeyInput.value = res.mistralApiKey || '';
     promptTextarea.value = res.userPrompt || DEFAULT_PROMPT;
     
+    const savedPosition = res.buttonPosition || 'bottom-right'; // 預設為 'bottom-right'
+    for (const radio of positionRadios) {
+      if (radio.value === savedPosition) {
+        radio.checked = true; // 根據儲存的值，選中對應的按鈕
+        break;
+      }
+    }
     // 根據讀取到的設定，顯示對應的區塊
     showRelevantSettings();
   });
@@ -37,11 +45,20 @@ function loadSettings() {
 
 // 儲存所有設定
 function saveSettings() {
+  let selectedPosition = 'bottom-right'; // 預設值
+  for (const radio of positionRadios) {
+    if (radio.checked) {
+      selectedPosition = radio.value;
+      break;
+    }
+  }
+
   const settings = {
     selectedModel: modelSelector.value,
     geminiApiKey: geminiApiKeyInput.value,
     mistralApiKey: mistralApiKeyInput.value,
-    userPrompt: promptTextarea.value
+    userPrompt: promptTextarea.value,
+    buttonPosition: selectedPosition
   };
 
   if (!settings.userPrompt.includes('{text}')) {
