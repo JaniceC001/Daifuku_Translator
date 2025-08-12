@@ -1,65 +1,63 @@
 // 預設 Prompt
 const DEFAULT_PROMPT_BG = `請將以下文字翻譯成繁體中文，不要總結::\n\n---\n{text}\n---`;
 
-// 在擴充功能安裝或更新時，建立右鍵選單
+// 安裝或更新時建立右鍵選單（僅桌面支援）
 browser.runtime.onInstalled.addListener(() => {
-  browser.contextMenus.create({
-    id: "translate-selection",            // 給這個選單項一個唯一的 ID
-    title: "使用Daifuku Translator",           // 顯示在右鍵選單上的文字
-    contexts: ["selection"]               // 只在使用者選取了文字時才顯示
-  });
+  if (browser.contextMenus && browser.contextMenus.create) {
+    browser.contextMenus.create({
+      id: "translate-selection",
+      title: "使用 Gemini 翻譯",
+      contexts: ["selection"]
+    });
+  } else {
+    console.log("contextMenus API 在此平台不支援，將使用替代方案");
+  }
 });
 
-// 2. 監聽右鍵選單的點擊事件
-browser.contextMenus.onClicked.addListener(async (info, tab) => {
-  // 確保是我們自己的選單項被點擊
-  if (info.menuItemId === "translate-selection") {
-    
-    // info.selectionText 會自動包含被選取的文字
-    const textToTranslate = info.selectionText;
+//翻譯
+async function startTranslation(textToTranslate, tab) {
+  if (!tab || !tab.id) return;
 
-    // 讓 content_script 先顯示一個等待面板
-    browser.tabs.sendMessage(tab.id, {
-      type: 'SHOW_LOADING_PANEL', // 使用一個新的訊息類型
-    });
-    
-    // 獲取所有相關設定 (不變)
-    const settings = await browser.storage.sync.get([
-      'selectedModel',
-      'geminiApiKey',
-      'mistralApiKey',
-      'userPrompt'
-    ]);
+  browser.tabs.sendMessage(tab.id, { type: 'SHOW_LOADING_PANEL' });
 
-    const model = settings.selectedModel || 'gemini'; // 預設使用 gemini
-    const promptTemplate = settings.userPrompt || DEFAULT_PROMPT_BG;
-    const finalPrompt = promptTemplate.replace('{text}', textToTranslate);
+  const settings = await browser.storage.sync.get([
+    'selectedModel', 'geminiApiKey', 'mistralApiKey', 'userPrompt'
+  ]);
 
-    // 步驟 C: 進入模型選擇分支後，再檢查對應的 Key
-    if (model === 'gemini') {
-      // 只在選擇 Gemini 時，才檢查 Gemini 的 Key
-      if (!settings.geminiApiKey) {
-        translatedText = '錯誤：請在設定頁面輸入您的 Gemini API Key。';
-      } else {
-        translatedText = await callGeminiApi(finalPrompt, settings.geminiApiKey);
-      }
-    } else if (model === 'mistral') {
-      // 只在選擇 Mistral 時，才檢查 Mistral 的 Key
-      if (!settings.mistralApiKey) {
-        translatedText = '錯誤：請在設定頁面輸入您的 Mistral API Key。';
-      } else {
-        translatedText = await callMistralApi(finalPrompt, settings.mistralApiKey);
-      }
-    } else {
-      // 處理未知模型的錯誤情況
-      translatedText = '錯誤：未知的 AI 模型被選擇。';
+  const model = settings.selectedModel || 'gemini';
+  const promptTemplate = settings.userPrompt || DEFAULT_PROMPT_BG;
+  const finalPrompt = promptTemplate.replace('{text}', textToTranslate);
+
+  let translatedText = '';
+  if (model === 'gemini') {
+    translatedText = settings.geminiApiKey
+      ? await callGeminiApi(finalPrompt, settings.geminiApiKey)
+      : '錯誤：請在設定頁面輸入您的 Gemini API Key。';
+  } else if (model === 'mistral') {
+    translatedText = settings.mistralApiKey
+      ? await callMistralApi(finalPrompt, settings.mistralApiKey)
+      : '錯誤：請在設定頁面輸入您的 Mistral API Key。';
+  }
+
+  browser.tabs.sendMessage(tab.id, {
+    type: 'TRANSLATION_RESULT',
+    text: translatedText
+  });
+}
+
+// 監聽右鍵選單（僅桌面）
+if (browser.contextMenus && browser.contextMenus.onClicked) {
+  browser.contextMenus.onClicked.addListener((info, tab) => {
+    if (info.menuItemId === "translate-selection") {
+      startTranslation(info.selectionText, tab);
     }
-    
-    // 3. 將結果傳回給觸發事件的那個分頁 (content_script)
-    browser.tabs.sendMessage(tab.id, {
-      type: 'TRANSLATION_RESULT',
-      text: translatedText
-    });
+  });
+}
+
+// 監聽懸浮按鈕（桌面 + Android 通用）
+browser.runtime.onMessage.addListener((message, sender) => {
+  if (message.type === 'TRANSLATE_TEXT_FROM_BUTTON') {
+    startTranslation(message.text, sender.tab);
   }
 });
 

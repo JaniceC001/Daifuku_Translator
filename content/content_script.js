@@ -1,6 +1,8 @@
 let translatedPanel = null;
+let floatingButton = null; //懸浮按鈕
 
-// 唯一的任務：監聽來自 background 的訊息，並顯示翻譯結果
+
+// 監聽來自 background 的訊息，並顯示翻譯結果
 browser.runtime.onMessage.addListener((message) => {
   if (message.type === 'SHOW_LOADING_PANEL') {
     // 收到「顯示載入中」指令，呼叫函式並傳入特殊內容
@@ -11,9 +13,76 @@ browser.runtime.onMessage.addListener((message) => {
   }
 });
 
+//監聽文字選取事件，以顯示/隱藏懸浮按鈕
+document.addEventListener('selectionchange', () => {
+  const selection = window.getSelection();
+  const selectedText = selection.toString().trim();
+
+  if (selectedText.length > 0) {
+    // 如果有選取文字，就顯示按鈕
+    showFloatingButton(selection);
+  } else {
+    // 如果沒有選取文字（例如使用者點擊了頁面空白處），就隱藏按鈕
+    hideFloatingButton();
+  }
+});
+
+//點擊頁面其他地方時，也隱藏按鈕
+document.addEventListener('mousedown', (event) => {
+    // 如果點擊的不是我們的懸浮按鈕，且沒有選取文字，則隱藏按鈕
+    if (floatingButton && !floatingButton.contains(event.target) && window.getSelection().toString().trim().length === 0) {
+        hideFloatingButton();
+    }
+});
+
+//建立和顯示懸浮按鈕
+function showFloatingButton(selection) {
+  if (!floatingButton) {
+    // 如果按鈕不存在，就建立它
+    floatingButton = document.createElement('div');
+    floatingButton.id = 'gemini-floating-button';
+    floatingButton.textContent = '翻譯'; // 或者放一個圖示
+    document.body.appendChild(floatingButton);
+
+    // 為按鈕添加點擊事件
+    floatingButton.addEventListener('click', () => {
+      const textToTranslate = window.getSelection().toString().trim();
+      if (textToTranslate.length > 0) {
+        // 發送一個新的訊息類型給 background
+        browser.runtime.sendMessage({
+          type: 'TRANSLATE_TEXT_FROM_BUTTON', // 使用新的類型以區分來源
+          text: textToTranslate
+        });
+      }
+      // 點擊後立即隱藏按鈕和選取
+      hideFloatingButton();
+      window.getSelection().removeAllRanges();
+    });
+  }
+
+  // 計算按鈕位置
+  const range = selection.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+  
+  // 將按鈕定位在選取範圍的右上角
+  floatingButton.style.top = `${window.scrollY + rect.top - 30}px`; // 往上偏移30px
+  floatingButton.style.left = `${window.scrollX + rect.right}px`;
+  floatingButton.style.display = 'block';
+}
+
+// 隱藏懸浮按鈕的函式
+function hideFloatingButton() {
+  if (floatingButton) {
+    floatingButton.style.display = 'none';
+  }
+}
+
+
 // 顯示翻譯結果的面板
 // 建立並顯示面板的函式 (只在第一次創建時呼叫)
 function showTranslationPanel(initialContent) {
+  
+  console.log("成功呼叫Panel，初始內容是:", initialContent);
   // 如果已有面板，先移除
   if (translatedPanel) {
     translatedPanel.remove();
