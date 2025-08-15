@@ -31,7 +31,7 @@ function showRelevantSettings() {
 
 // 頁面載入時，讀取所有設定
 function loadSettings() {
-  browser.storage.sync.get([
+  browser.storage.local.get([
     'selectedModel',
     'geminiApiKey',
     'mistralApiKey',
@@ -86,7 +86,7 @@ function saveSettings() {
     return;
   }
 
-  browser.storage.sync.set(settings).then(() => {
+  browser.storage.local.set(settings).then(() => {
     statusDiv.textContent = '設定已儲存！';
     setTimeout(() => statusDiv.textContent = '', 2000);
   });

@@ -20,7 +20,7 @@ async function startTranslation(textToTranslate, tab) {
 
   browser.tabs.sendMessage(tab.id, { type: 'SHOW_LOADING_PANEL' });
 
-  const settings = await browser.storage.sync.get([
+  const settings = await browser.storage.local.get([
     'selectedModel', 'geminiApiKey', 'mistralApiKey', 'userPrompt'
   ]);
 

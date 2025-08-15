@@ -60,7 +60,7 @@ async function showFloatingButton(selection) {
     });
   }
 
-  const { buttonPosition } = await browser.storage.sync.get('buttonPosition');
+  const { buttonPosition } = await browser.storage.local.get('buttonPosition');
   const position = buttonPosition || 'bottom-right'; // 如果未設定，預設為右上角
 
   // 計算按鈕位置
@@ -98,7 +98,7 @@ async function showTranslationPanel(initialContent) {
   }
 
   // 獲取尺寸設定
-  const { panelWidth, panelMaxHeight } = await browser.storage.sync.get([
+  const { panelWidth, panelMaxHeight } = await browser.storage.local.get([
     'panelWidth', 
     'panelMaxHeight'
   ]);
