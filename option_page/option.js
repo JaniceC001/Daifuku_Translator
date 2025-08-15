@@ -10,6 +10,7 @@ const panelWidthInput = document.getElementById('panelWidth');
 const panelMaxHeightInput = document.getElementById('panelMaxHeight');
 const resetSizeButton = document.getElementById('resetSizeButton');
 const statusDiv = document.getElementById('status');
+const resetPromptBtn = document.getElementById('resetPromptButton');
 
 // 定義一個預設的 Prompt，當使用者還沒有設定時使用
 const DEFAULT_PROMPT = `請將以下文字翻譯成繁體中文，不要總結:\n\n---\n{text}\n---`;
@@ -97,6 +98,14 @@ resetSizeButton.addEventListener('click', () => {
   panelMaxHeightInput.value = DEFAULT_PANEL_MAX_HEIGHT;
   // 提示使用者需要儲存
   statusDiv.textContent = '已重設為預設值，請點擊儲存。';
+  setTimeout(() => statusDiv.textContent = '', 2000);
+});
+
+// 重設prompt的事件監聽
+resetPromptBtn.addEventListener('click', () => {
+  promptTextarea.value = DEFAULT_PROMPT;
+  statusDiv.textContent = '已重設為預設值，請點擊儲存。';
+  setTimeout(() => statusDiv.textContent = '', 2000);
 });
 
 // 事件監聽
