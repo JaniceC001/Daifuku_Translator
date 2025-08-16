@@ -13,7 +13,7 @@ const statusDiv = document.getElementById('status');
 const resetPromptBtn = document.getElementById('resetPromptButton');
 
 // 定義一個預設的 Prompt，當使用者還沒有設定時使用
-const DEFAULT_PROMPT = `請將以下文字翻譯成繁體中文，不要總結:\n\n---\n{text}\n---`;
+const DEFAULT_PROMPT = `Please translate the following text into Traditional Chinese, NO summarize:\n\n---\n{text}\n---`;
 
 //預設PANEL尺寸
 const DEFAULT_PANEL_WIDTH = 350;
@@ -70,21 +70,29 @@ function saveSettings() {
     }
   }
 
+  let userPromptValue = promptTextarea.value;
+
+  // 移除 HTML 標籤，防止儲存潛在的惡意腳本
+  const tempDiv = document.createElement('div');
+  tempDiv.textContent = userPromptValue;
+  const sanitizedPrompt = tempDiv.innerHTML; // 將 < 轉換為 &lt; 等
+
+  // 驗證清理後的 prompt
+  if (!sanitizedPrompt.includes('{text}')) {
+    alert('錯誤：自訂 Prompt 必須包含 {text} 預留位置！');
+    return;
+  }
+
   const settings = {
     selectedModel: modelSelector.value,
     geminiApiKey: geminiApiKeyInput.value,
     mistralApiKey: mistralApiKeyInput.value,
-    userPrompt: promptTextarea.value,
+    userPrompt: sanitizedPrompt, // 儲存清理後的版本
     buttonPosition: selectedPosition,
     panelWidth: parseInt(panelWidthInput.value, 10) || DEFAULT_PANEL_WIDTH,
     panelMaxHeight: parseInt(panelMaxHeightInput.value, 10) || DEFAULT_PANEL_MAX_HEIGHT
     // 使用 parseInt 確保儲存的是數字
   };
-
-  if (!settings.userPrompt.includes('{text}')) {
-    alert('錯誤：自訂 Prompt 必須包含 {text} 預留位置！');
-    return;
-  }
 
   browser.storage.local.set(settings).then(() => {
     statusDiv.textContent = '設定已儲存！';

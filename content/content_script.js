@@ -91,7 +91,6 @@ function hideFloatingButton() {
 // 建立並顯示面板的函式 (只在第一次創建時呼叫)
 async function showTranslationPanel(initialContent) {
   
-  console.log("成功呼叫Panel，初始內容是:", initialContent);
   // 如果已有面板，先移除
   if (translatedPanel) {
     translatedPanel.remove();

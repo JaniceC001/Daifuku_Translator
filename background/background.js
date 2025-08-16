@@ -1,5 +1,5 @@
 // 預設 Prompt
-const DEFAULT_PROMPT_BG = `請將以下文字翻譯成繁體中文，不要總結::\n\n---\n{text}\n---`;
+const DEFAULT_PROMPT_BG = `Please translate the following text into Traditional Chinese, NO summarize:\n\n---\n{text}\n---`;
 
 // 安裝或更新時建立右鍵選單（僅桌面支援）
 browser.runtime.onInstalled.addListener(() => {
@@ -84,10 +84,12 @@ async function callGeminiApi(prompt, apiKey) {
       })
     });
 
+    // 改善後的錯誤處理
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Gemini API Error:', errorData);
-      return `API 呼叫失敗: ${errorData.error.message}`;
+      console.error('API Error:', errorData.error?.message || '未知錯誤');
+      // 不要記錄完整的 errorData
+      return `API 呼叫失敗: ${errorData.error?.message || '請求失敗'}`;
     }
 
     const data = await response.json();
