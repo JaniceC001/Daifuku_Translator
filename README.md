@@ -25,12 +25,15 @@ PC：選取文字後可以右鍵開啟選單，選擇【使用Daifuku Translator
 ### Android
 （待填）
 
-
 ## Q&A
 Q: Api Key存取在哪裡？
+
 A: 存取在browser.storage.local
 
+<br>
+
 Q: 安全嗎？
+
 A: 沒有絕對的安全，本擴充已經使用了DOMPurify過濾惡意攻擊，剩下的可能性請由使用者自己承擔，請不要隨意瀏覽不明網站。
 
 ## Third-Party Libraries
