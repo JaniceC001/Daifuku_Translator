@@ -28,9 +28,9 @@ PC：選取文字後可以右鍵開啟選單，選擇【使用Daifuku Translator
     - Mistral large 2411
     - Mistral small latest
 - 輸入API key，API key獲取方法請自己到各個模型供應商官網尋找
-- <scan style="color: blue;">(可選)</scan>選擇懸浮按鈕的位置：右上角/右下角
-- <scan style="color: blue;">(可選)</scan>設定翻譯頁面大小
-- <scan style="color: blue;">(可選)</scan>自訂Prompt，若你想讓AI將內容翻譯成其他語言，請自己修改Prompt
+- *(可選)* 選擇懸浮按鈕的位置：右上角/右下角
+- *(可選)* 設定翻譯頁面大小
+- *(可選)* 自訂Prompt，若你想讓AI將內容翻譯成其他語言，請自己修改Prompt
 - 儲存設定
 
 
@@ -58,7 +58,7 @@ Q: 我的AI一直給總結/評價/額外資訊給我，怎麽辦？
 
 A: 修改Prompt即可，可以嘗試以下的Prompt範本
 
-<scan style="color: blue;">*不一定能解決問題，請自己再根據情況修改*</scan>
+***不一定能解決問題，請自己再根據情況修改***
 ```
 Please translate the following text into Traditional Chinese, NO summarize, No comment, Only translate text:
 
