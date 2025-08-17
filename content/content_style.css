@@ -62,6 +62,31 @@
   
 }
 
+/*panel footer = 重新生成和複製按鍵的地方*/
+.panel-footer {
+  display: flex; /* 使用 flex 佈局 */
+  justify-content: flex-end; /* 按鈕靠右 */
+  padding: 4px 8px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #f7f7f7;
+  display: none; /* 預設隱藏，由 JS 控制顯示 */
+}
+
+/* 新增 Action Button 樣式 */
+.action-btn {
+  background: none;
+  border: none;
+  font-size: 16px; /* 圖示大小 */
+  cursor: pointer;
+  margin-left: 8px; /* 按鈕間距 */
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.action-btn:hover {
+  opacity: 1;
+}
+
 .loading-indicator {
   text-align: center;
   padding: 20px;

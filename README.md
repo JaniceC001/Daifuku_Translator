@@ -54,6 +54,20 @@ A: 請檢查你自己的API key與模型供應商，大部分都是模型供應�
 
 <br>
 
+Q: 我的AI一直給總結/評價/額外資訊給我，怎麽辦？
+
+A: 修改Prompt即可，可以嘗試以下的Prompt範本
+
+<scan style="color: blue;">*不一定能解決問題，請自己再根據情況修改*</scan>
+```
+Please translate the following text into Traditional Chinese, NO summarize, No comment, Only translate text:
+
+---
+{text}
+---
+```
+<br>
+
 Q: 我發現了bug。
 
 A: 請在Github回報，謝謝！

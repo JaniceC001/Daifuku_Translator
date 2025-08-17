@@ -9,7 +9,8 @@ browser.runtime.onMessage.addListener((message) => {
     showTranslationPanel("等待回應中...");
   } else if (message.type === 'TRANSLATION_RESULT') {
     // 收到「翻譯結果」指令，呼叫同一個函式來更新內容
-    updatePanelContent(message.text);
+    const isError = message.status === 'error';
+    updatePanelContent(message.text, isError);
   }
 });
 
@@ -120,6 +121,11 @@ async function showTranslationPanel(initialContent) {
     <div class="panel-body"> 
         <!-- 內容將由 JS 動態填入 --> 
     </div>
+    <!-- 按鈕容器 -->
+    <div class="panel-footer">
+      <button class="action-btn" id="regenerate-btn" title="重新生成">🔄</button>
+      <button class="action-btn" id="copy-btn" title="複製">📋</button>
+    </div>
   `;
 
   // 為 panel-body 設定 max-height
@@ -132,20 +138,56 @@ async function showTranslationPanel(initialContent) {
 
   //呼叫Update填入初始內容
   updatePanelContent(initialContent);
+  addPanelActionListeners(); //重新生成和複製按鈕的事件監聽
 
   // 關閉按鈕的邏輯
   translatedPanel.querySelector('.close-btn').addEventListener('click', () => {
     translatedPanel.remove();
     translatedPanel = null;
   });
+
+  //重新獲得回覆和複製按鈕
+  function addPanelActionListeners() {
+    if (!translatedPanel) return;
+
+    const regenerateBtn = translatedPanel.querySelector('#regenerate-btn');
+    const copyBtn = translatedPanel.querySelector('#copy-btn');
+
+    // 重新生成按鈕
+    regenerateBtn.addEventListener('click', () => {
+        // 向 background 發送重新生成請求
+        browser.runtime.sendMessage({ type: 'REGENERATE_TRANSLATION' });
+    });
+
+    // 複製按鈕
+    copyBtn.addEventListener('click', () => {
+        const panelBody = translatedPanel.querySelector('.panel-body');
+        const textToCopy = panelBody ? panelBody.innerText : ''; // 使用 innerText 獲取純文字
+        
+        if (textToCopy) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // 複製成功的回饋
+                copyBtn.textContent = '✅';
+                setTimeout(() => { copyBtn.textContent = '📋'; }, 1500);
+            }).catch(err => {
+                console.error('複製失敗:', err);
+                copyBtn.textContent = '❌';
+                 setTimeout(() => { copyBtn.textContent = '📋'; }, 1500);
+            });
+        }
+    });
+  }
 }
 
 // 更新面板內容的函式
-function updatePanelContent(htmlContent) {
+function updatePanelContent(htmlContent, isError=false) {
   if (!translatedPanel) return; // 如果面板不存在，直接返回
 
   const panelBody = translatedPanel.querySelector('.panel-body');
-  if (panelBody) {
+  const panelFooter = translatedPanel.querySelector('.panel-footer'); // 獲取 footer
+  const copy_btn = translatedPanel.querySelector('#copy-btn'); //複製按鈕
+
+  if (panelBody && panelFooter && copy_btn) {
     // 替換換行符，並可以加入一個載入中的 CSS class
     if (htmlContent === "等待回應中...") {
         panelBody.innerHTML = `<div class="loading-indicator">${htmlContent}</div>`;
@@ -154,6 +196,22 @@ function updatePanelContent(htmlContent) {
         const cleanHtml = DOMPurify.sanitize(htmlContent.replace(/\n/g, '<br>'));
         // 將清理過的、安全的 HTML 賦值給 innerHTML
         panelBody.innerHTML = cleanHtml;
+        panelFooter.style.display = 'flex';//在顯示結果後顯示按鈕
+
+        //如果是error就隱藏複製按鈕
+        copy_btn.style.display = isError ? 'none' : 'inline-block';
+
+        /*  這是單純禁止複製按鈕不能按
+        if (isError){
+          copy_btn.disabled = true;
+          copy_btn.style.opacity = '0.4';
+          copy_btn.style.cursor = 'not-allowed';
+        }else{
+          copy_btn.disabled = false;
+          copy_btn.style.opacity = '0.7';
+          copy_btn.style.cursor = 'pointer';
+        }
+        */
     }
   }
 }

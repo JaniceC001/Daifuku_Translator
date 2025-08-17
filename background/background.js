@@ -1,5 +1,7 @@
 // 預設 Prompt
 const DEFAULT_PROMPT_BG = `Please translate the following text into Traditional Chinese, NO summarize:\n\n---\n{text}\n---`;
+let last_req = null; //最後一個請求的user input
+let status = 'success'; //預設API請求都是成功
 
 // 安裝或更新時建立右鍵選單（僅桌面支援）
 browser.runtime.onInstalled.addListener(() => {
@@ -17,7 +19,8 @@ browser.runtime.onInstalled.addListener(() => {
 //翻譯
 async function startTranslation(textToTranslate, tab) {
   if (!tab || !tab.id) return;
-
+  
+  last_req = {text : textToTranslate, tab: tab};
   browser.tabs.sendMessage(tab.id, { type: 'SHOW_LOADING_PANEL' });
 
   const settings = await browser.storage.local.get([
@@ -28,23 +31,27 @@ async function startTranslation(textToTranslate, tab) {
   const promptTemplate = settings.userPrompt || DEFAULT_PROMPT_BG;
   const finalPrompt = promptTemplate.replace('{text}', textToTranslate);
 
-  let translatedText = '';
-  if (model === 'gemini') {
-    translatedText = settings.geminiApiKey
-      ? await callGeminiApi(finalPrompt, settings.geminiApiKey)
-      : '錯誤：請在設定頁面輸入您的 Gemini API Key。';
+  let result = {status: 'success', data: ''};
+
+  if (model.startsWith('gemini')) {
+    if (!settings.geminiApiKey){
+      result = {status: 'error', data: '錯誤：請在設定頁面輸入您的 Gemini API Key。'};
+    } else {
+      result = await callGeminiApi(finalPrompt, settings.geminiApiKey);
+    }
   } else if (model.startsWith('mistral')) {
     if (!settings.mistralApiKey) {
-        translatedText = '錯誤：請在設定頁面輸入您的 Mistral API Key。';
+        result = {status: 'error', data: '錯誤：請在設定頁面輸入您的 Mistral API Key。'};
       } else {
         // 將完整的模型值 ( "mistral-large-2411") 傳遞給 API 函式
-        translatedText = await callMistralApi(finalPrompt, settings.mistralApiKey, model);
+        result = await callMistralApi(finalPrompt, settings.mistralApiKey, model);
       }
   }
 
   browser.tabs.sendMessage(tab.id, {
     type: 'TRANSLATION_RESULT',
-    text: translatedText
+    status: result.status,
+    text: result.data
   });
 }
 
@@ -61,6 +68,14 @@ if (browser.contextMenus && browser.contextMenus.onClicked) {
 browser.runtime.onMessage.addListener((message, sender) => {
   if (message.type === 'TRANSLATE_TEXT_FROM_BUTTON') {
     startTranslation(message.text, sender.tab);
+  }else if (message.type === 'REGENERATE_TRANSLATION') {
+    if (last_req) {
+      console.log("收到重新生成請求");
+      // 使用儲存的原文和 tab 資訊，再次呼叫核心翻譯函式
+      startTranslation(last_req.text, last_req.tab);
+    } else {
+      console.error("無法重新生成，找不到上一次的請求資訊。");
+    }
   }
 });
 
@@ -88,15 +103,25 @@ async function callGeminiApi(prompt, apiKey) {
     if (!response.ok) {
       const errorData = await response.json();
       console.error('API Error:', errorData.error?.message || '未知錯誤');
-      // 不要記錄完整的 errorData
-      return `API 呼叫失敗: ${errorData.error?.message || '請求失敗'}`;
+      // 不要記錄完整的 errorData (Gemini有機會回傳ENFOUNDED=有API key)
+      return {
+        status: 'error',
+        data: `API 呼叫失敗: ${errorData.error?.message || '請求失敗'}`
+      };
     }
 
     const data = await response.json();
-    return data.candidates[0].content.parts[0].text;
+
+    return {
+      status: 'success',
+      data: data.candidates[0].content.parts[0].text
+    };
   } catch (error) {
     console.error('Fetch Error:', error);
-    return '網路請求失敗，請檢查主控台。';
+    return {
+      status: 'error',
+      data:'網路請求失敗，請檢查主控台。'
+    };
   }
 }
 
@@ -121,14 +146,23 @@ async function callMistralApi(prompt, apiKey, modelId) {
     if (!response.ok) {
       const errorData = await response.json();
       console.error('Mistral API Error:', errorData);
-      return `API 呼叫失敗: ${errorData.message || '未知錯誤'}`;
+      return {
+        status: 'error',
+        data: `API 呼叫失敗: ${errorData.message || '未知錯誤'}`
+      };
     }
 
     const data = await response.json();
     // Mistral 的回應結構不同
-    return data.choices[0].message.content;
+    return {
+      status: 'success',
+      data: data.choices[0].message.content
+    };
   } catch (error) {
     console.error('Fetch Error:', error);
-    return '網路請求失敗，請檢查主控台。';
+    return {
+      status: 'error',
+      data:'網路請求失敗，請檢查主控台。'
+    };
   }
 }
