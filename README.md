@@ -35,20 +35,20 @@ PC：選取文字後可以右鍵開啟選單，選擇【使用Daifuku Translator
 
 
 ## Q&A
-##### Q: Api Key存取在哪裡？
+#### Q: Api Key存取在哪裡？
 
 A: 存取在browser.storage.local
 
-##### Q: 安全嗎？
+#### Q: 安全嗎？
 
 A: 沒有絕對的安全，本擴充已經使用了DOMPurify過濾惡意攻擊，剩下的可能性請由使用者自己承擔，請不要隨意瀏覽不明網站。
 
-##### Q: API呼叫失敗/給出錯誤訊息/沒有翻譯，為什麼？
+#### Q: API呼叫失敗/給出錯誤訊息/沒有翻譯，為什麼？
 
 A: 請檢查你自己的API key與模型供應商，大部分都是模型供應商問題。
 有一些是AI拒絕回覆敏感內容，請自己修改Prompt/翻譯內容。
 
-##### Q: 我的AI一直給總結/評價/額外資訊給我，怎麽辦？
+#### Q: 我的AI一直給總結/評價/額外資訊給我，怎麽辦？
 
 A: 修改Prompt即可，可以嘗試以下的Prompt範本
 
@@ -61,7 +61,7 @@ Please translate the following text into Traditional Chinese, NO summarize, No c
 ---
 ```
 
-##### Q: 我發現了bug。
+#### Q: 我發現了bug。
 
 A: 請在Github回報，謝謝！
 
