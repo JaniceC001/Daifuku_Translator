@@ -1,16 +1,17 @@
 let translatedPanel = null;
 let floatingButton = null; //懸浮按鈕
-
+let text_req_last = null; //儲存最後一次輸入
 
 // 監聽來自 background 的訊息，並顯示翻譯結果
 browser.runtime.onMessage.addListener((message) => {
   if (message.type === 'SHOW_LOADING_PANEL') {
+    //如果
+    if (message.originalText){ text_req_last = message.originalText; }
     // 收到「顯示載入中」指令，呼叫函式並傳入特殊內容
     showTranslationPanel("等待回應中...");
   } else if (message.type === 'TRANSLATION_RESULT') {
     // 收到「翻譯結果」指令，呼叫同一個函式來更新內容
-    const isError = message.status === 'error';
-    updatePanelContent(message.text, isError);
+    updatePanelContent(message.text, message);
   }
 });
 
@@ -49,6 +50,8 @@ async function showFloatingButton(selection) {
     floatingButton.addEventListener('click', () => {
       const textToTranslate = window.getSelection().toString().trim();
       if (textToTranslate.length > 0) {
+        //儲存最後一次request的原文
+        text_req_last = textToTranslate;
         // 發送一個新的訊息類型給 background
         browser.runtime.sendMessage({
           type: 'TRANSLATE_TEXT_FROM_BUTTON', // 使用新的類型以區分來源
@@ -144,6 +147,7 @@ async function showTranslationPanel(initialContent) {
   translatedPanel.querySelector('.close-btn').addEventListener('click', () => {
     translatedPanel.remove();
     translatedPanel = null;
+    text_req_last= null; //關閉面板的時候清空儲存的last request原文
   });
 
   //重新獲得回覆和複製按鈕
@@ -155,8 +159,16 @@ async function showTranslationPanel(initialContent) {
 
     // 重新生成按鈕
     regenerateBtn.addEventListener('click', () => {
-        // 向 background 發送重新生成請求
-        browser.runtime.sendMessage({ type: 'REGENERATE_TRANSLATION' });
+        // 向 background 發送重新生成請求(直接發起一個新的翻譯請求)
+        if(text_req_last){
+          console.log("正在重新生成...");
+          browser.runtime.sendMessage({
+            type: 'TRANSLATE_TEXT_FROM_BUTTON',
+            text: text_req_last
+          });
+        }else{
+          console.error("無法重新生成, 找不到原文");
+        }
     });
 
     // 複製按鈕
@@ -180,17 +192,21 @@ async function showTranslationPanel(initialContent) {
 }
 
 // 更新面板內容的函式
-function updatePanelContent(htmlContent, isError=false) {
+function updatePanelContent(htmlContent, message) {
   if (!translatedPanel) return; // 如果面板不存在，直接返回
 
   const panelBody = translatedPanel.querySelector('.panel-body');
   const panelFooter = translatedPanel.querySelector('.panel-footer'); // 獲取 footer
   const copy_btn = translatedPanel.querySelector('#copy-btn'); //複製按鈕
+  const regen_btn = translatedPanel.querySelector('#regenerate-btn'); //重新生成回覆按鈕
 
   if (panelBody && panelFooter && copy_btn) {
     // 替換換行符，並可以加入一個載入中的 CSS class
     if (htmlContent === "等待回應中...") {
         panelBody.innerHTML = `<div class="loading-indicator">${htmlContent}</div>`;
+        // 載入中時，也禁用按鈕
+        regen_btn.disabled = true;
+        copy_btn.disabled = true;
     } else {
         // 使用 DOMPurify 清理來自 API 的內容
         const cleanHtml = DOMPurify.sanitize(htmlContent.replace(/\n/g, '<br>'));
@@ -198,8 +214,23 @@ function updatePanelContent(htmlContent, isError=false) {
         panelBody.innerHTML = cleanHtml;
         panelFooter.style.display = 'flex';//在顯示結果後顯示按鈕
 
-        //如果是error就隱藏複製按鈕
-        copy_btn.style.display = isError ? 'none' : 'inline-block';
+        //檢查是不是error
+        const isError = message.status === 'error';
+
+        if (isError && message.errorCode === 'MISSING_API_KEY') {
+          regen_btn.disabled = true;
+        } else {
+          regen_btn.disabled = false;
+        }
+        
+        // 再來決定複製按鈕的狀態
+        if (isError) {
+          copy_btn.style.display = 'none'; // 發生錯誤時隱藏
+          copy_btn.disabled = true;
+        } else {
+          copy_btn.style.display = 'inline-block'; // 成功時顯示
+          copy_btn.disabled = false;
+        }
 
         /*  這是單純禁止複製按鈕不能按
         if (isError){

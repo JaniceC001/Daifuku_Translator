@@ -85,6 +85,13 @@
 
 .action-btn:hover {
   opacity: 1;
+
+}
+
+/* 被禁用的按鈕 */
+.action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .loading-indicator {

@@ -1,6 +1,5 @@
 // 預設 Prompt
 const DEFAULT_PROMPT_BG = `Please translate the following text into Traditional Chinese, NO summarize:\n\n---\n{text}\n---`;
-let last_req = null; //最後一個請求的user input
 let status = 'success'; //預設API請求都是成功
 
 // 安裝或更新時建立右鍵選單（僅桌面支援）
@@ -20,11 +19,14 @@ browser.runtime.onInstalled.addListener(() => {
 async function startTranslation(textToTranslate, tab) {
   if (!tab || !tab.id) return;
 
-  //先獲取設定
+  //前端通知載入中
+  browser.tabs.sendMessage(tab.id, { type: 'SHOW_LOADING_PANEL', originalText: textToTranslate});
+
+  //獲取設定
   const settings = await browser.storage.local.get([
     'selectedModel', 'geminiApiKey', 'mistralApiKey', 'userPrompt'
   ]);
-
+  
   const model = settings.selectedModel || 'gemini';
   
   //立即進行API key測試
@@ -32,7 +34,8 @@ async function startTranslation(textToTranslate, tab) {
       browser.tabs.sendMessage(tab.id, {
         type: 'TRANSLATION_RESULT',
         status: 'error', 
-        data: '錯誤：請在設定頁面輸入您的 Gemini API Key。'
+        text: '錯誤：請在設定頁面輸入您的 Gemini API Key。',
+        errorCode: 'MISSING_API_KEY'
       });
       return;
   }
@@ -40,15 +43,11 @@ async function startTranslation(textToTranslate, tab) {
       browser.tabs.sendMessage(tab.id, {
         type: 'TRANSLATION_RESULT',
         status: 'error', 
-        data: '錯誤：請在設定頁面輸入您的 Mistral API Key。'
+        text: '錯誤：請在設定頁面輸入您的 Mistral API Key。',
+        errorCode: 'MISSING_API_KEY'
       });
       return;
   }
-
-  //儲存本次請求的原文和tab資訊(重新生成按鈕)
-  last_req = {text : textToTranslate, tab: tab};
-  //前端通知載入中
-  browser.tabs.sendMessage(tab.id, { type: 'SHOW_LOADING_PANEL' });
 
   //執行API請求前的前置動作
   const promptTemplate = settings.userPrompt || DEFAULT_PROMPT_BG;
@@ -82,14 +81,6 @@ if (browser.contextMenus && browser.contextMenus.onClicked) {
 browser.runtime.onMessage.addListener((message, sender) => {
   if (message.type === 'TRANSLATE_TEXT_FROM_BUTTON') {
     startTranslation(message.text, sender.tab);
-  }else if (message.type === 'REGENERATE_TRANSLATION') {
-    if (last_req) {
-      console.log("收到重新生成請求");
-      // 使用儲存的原文和 tab 資訊，再次呼叫核心翻譯函式
-      startTranslation(last_req.text, last_req.tab);
-    } else {
-      console.error("無法重新生成，找不到上一次的請求資訊。");
-    }
   }
 });
 
