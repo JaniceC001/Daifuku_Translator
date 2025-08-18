@@ -19,33 +19,47 @@ browser.runtime.onInstalled.addListener(() => {
 //翻譯
 async function startTranslation(textToTranslate, tab) {
   if (!tab || !tab.id) return;
-  
-  last_req = {text : textToTranslate, tab: tab};
-  browser.tabs.sendMessage(tab.id, { type: 'SHOW_LOADING_PANEL' });
 
+  //先獲取設定
   const settings = await browser.storage.local.get([
     'selectedModel', 'geminiApiKey', 'mistralApiKey', 'userPrompt'
   ]);
 
   const model = settings.selectedModel || 'gemini';
+  
+  //立即進行API key測試
+  if (model.startsWith('gemini') && !settings.geminiApiKey) {
+      browser.tabs.sendMessage(tab.id, {
+        type: 'TRANSLATION_RESULT',
+        status: 'error', 
+        data: '錯誤：請在設定頁面輸入您的 Gemini API Key。'
+      });
+      return;
+  }
+  if (model.startsWith('mistral') && !settings.mistralApiKey) {
+      browser.tabs.sendMessage(tab.id, {
+        type: 'TRANSLATION_RESULT',
+        status: 'error', 
+        data: '錯誤：請在設定頁面輸入您的 Mistral API Key。'
+      });
+      return;
+  }
+
+  //儲存本次請求的原文和tab資訊(重新生成按鈕)
+  last_req = {text : textToTranslate, tab: tab};
+  //前端通知載入中
+  browser.tabs.sendMessage(tab.id, { type: 'SHOW_LOADING_PANEL' });
+
+  //執行API請求前的前置動作
   const promptTemplate = settings.userPrompt || DEFAULT_PROMPT_BG;
   const finalPrompt = promptTemplate.replace('{text}', textToTranslate);
 
   let result = {status: 'success', data: ''};
 
   if (model.startsWith('gemini')) {
-    if (!settings.geminiApiKey){
-      result = {status: 'error', data: '錯誤：請在設定頁面輸入您的 Gemini API Key。'};
-    } else {
       result = await callGeminiApi(finalPrompt, settings.geminiApiKey);
-    }
-  } else if (model.startsWith('mistral')) {
-    if (!settings.mistralApiKey) {
-        result = {status: 'error', data: '錯誤：請在設定頁面輸入您的 Mistral API Key。'};
-      } else {
-        // 將完整的模型值 ( "mistral-large-2411") 傳遞給 API 函式
-        result = await callMistralApi(finalPrompt, settings.mistralApiKey, model);
-      }
+  }else if (model.startsWith('mistral')) {
+      result = await callMistralApi(finalPrompt, settings.mistralApiKey, model);
   }
 
   browser.tabs.sendMessage(tab.id, {
