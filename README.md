@@ -1,5 +1,5 @@
 # Daifuku_Translator
-[中文](README.md) | [English](README_en.md)
+[中文](README.md) | [English](README_en.md) | [Update Log](https://janicec001.gitbook.io/daifuku-translator/WnMDtAwBbYbFwbLBliky/update_log)
 
 # 擴充介紹
 此擴充是透過使用AI (LLM)來對網頁進行翻譯，需要使用者提供 API key，若你對API key存取方式或安全性有疑慮，可以先看看[Q&A](https://github.com/JaniceC001/Daifuku_Translator?tab=readme-ov-file#qa)。
@@ -68,6 +68,8 @@ A: 沒有絕對的安全，本擴充已經使用了[DOMPurify](https://github.co
 
 A: 請檢查你自己的API key與模型供應商，大部分都是模型供應商問題。
 有一些是AI拒絕回覆敏感內容，請自己修改Prompt/翻譯內容。
+
+###### 提醒：使用者有責任確保其輸入的內容（包括選取的文字和自訂的 Prompt）遵守 API 供應商的使用政策。任何因濫用行為（如嘗試繞過安全限制）導致的 API Key 封鎖或其他後果，由使用者自行承擔。
 
 <br>
 

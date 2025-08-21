@@ -1,5 +1,5 @@
 # Daifuku_Translator
-[中文](README.md) | [English](README_en.md)
+[中文](README.md) | [English](README_en.md) | [Update Log](https://janicec001.gitbook.io/daifuku-translator/WnMDtAwBbYbFwbLBliky/update_log)
 
 **This extension does not yet offer other interface language settings.**
 
@@ -65,6 +65,8 @@ A: There is no absolute security. This extension has used [DOMPurify](https://gi
 #### Q: Why does the API call fail/give an error message/not translate?
 
 A: Please check your own API key and model provider. Most issues are with the model provider. Some are due to the AI refusing to respond to sensitive content. Please modify the Prompt/translation content yourself.
+
+###### Disclaimer: The user is responsible for ensuring that their input, including selected text and custom prompts, complies with the API provider's usage policy. The user is solely responsible for any consequences resulting from abusive behavior, such as attempting to bypass safety restrictions, including but not limited to the suspension of their API key.
 
 <br>
 
