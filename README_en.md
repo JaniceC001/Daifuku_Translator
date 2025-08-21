@@ -18,6 +18,8 @@ Firefox(PC & Android)
 ## Release
 [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/daifuku-translator/)
 
+## History Version
+[release](https://github.com/JaniceC001/Daifuku_Translator/tree/main/release)
 
 # Quirk Start
 ## Initial Setup

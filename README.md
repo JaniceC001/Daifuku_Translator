@@ -16,6 +16,9 @@ Firefox (PC & Android)
 ### 發佈版本
 Firefox Add-ons 商店
 
+### 歷史版本
+[release](https://github.com/JaniceC001/Daifuku_Translator/tree/main/release)
+
 # 快速開始
 ## 首次設定
 
