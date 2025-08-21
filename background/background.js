@@ -20,7 +20,10 @@ async function startTranslation(textToTranslate, tab) {
   if (!tab || !tab.id) return;
 
   //前端通知載入中
-  browser.tabs.sendMessage(tab.id, { type: 'SHOW_LOADING_PANEL', originalText: textToTranslate});
+  browser.tabs.sendMessage(tab.id, { 
+    type: 'SHOW_LOADING_PANEL', 
+    originalText: textToTranslate
+  });
 
   //獲取設定
   const settings = await browser.storage.local.get([

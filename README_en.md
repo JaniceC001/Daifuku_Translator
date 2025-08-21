@@ -1,27 +1,29 @@
 # Daifuku_Translator
 [中文](README.md) | [English](README_en.md)
 
-
-Support Firefox(PC&Android)
-
 **This extension does not yet offer other interface language settings.**
 
 **This Readme content is translated by an LLM and may contain ambiguities or errors.**
 
-## Usage Method
+## About This Extension
+This extension uses AI (LLM) to translate web pages and requires your own API key. For questions about API key storage and security, please see our [Q&A](https://github.com/JaniceC001/Daifuku_Translator/blob/main/README_en.md#qa).
 
-Select text and use LLM for translation
+This extension is an **open-source project**. LINCSES is licensed under the Apache 2.0 License, and the license file is located in the root directory as `LICENSE`.
 
-You need to set the API key in the `Manage Extensions - Options` or click on the Daifuku Translator icon to enter the settings page.
+We use the [DOMPurify](https://github.com/cure53/DOMPurify) library to ensure security. For full license details, see `libs\LICENSE_DOMPurify.txt`.
 
-Android: After selecting text, a floating button with the word `Translate` will appear; press it to translate.
+## Supported browser
+Firefox(PC & Android)
 
-PC: After selecting text, you can right-click to open the menu, choose `Use Daifuku Translator`, or use the floating button to translate.
+## Release
+[Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/daifuku-translator/)
 
+
+# Quirk Start
 ## Initial Setup
 ### PC
 
-Click on the Daifuku Translator icon *or* select the option in the add-on management to open the settings page
+Click on the Daifuku Translator icon *or* select the option in the add-on management to open the settings page.
 
 ### Android
 
@@ -38,17 +40,23 @@ Click on the `⠸` in the upper right corner to open the menu, select the extens
 - *(Optional)* Customize the Prompt, if you want the AI to translate the content into another language, please modify the Prompt yourself
 - Save settings
 
+## Usage Method
+
+Android: After selecting text, a floating button with the word `Translate` will appear; press it to translate.
+
+PC: After selecting text, you can right-click to open the menu, choose `Use Daifuku Translator`, or use the floating button to translate.
+
 ## Q&A
 
 #### Q: Where is the Api Key stored?
 
-A: It is stored in browser.storage.local
+A: It is stored in `browser.storage.local`, it means that the keys are stored only on your local computer and are not uploaded to any server.
 
 <br>
 
 #### Q: Is it secure?
 
-A: There is no absolute security. This extension has used DOMPurify to filter malicious attacks. The remaining possibilities are to be borne by the user. Please do not browse unknown websites indiscriminately.
+A: There is no absolute security. This extension has used [DOMPurify](https://github.com/cure53/DOMPurify) to filter malicious attacks. The remaining possibilities are to be borne by the user. Please do not browse unknown websites indiscriminately.
 
 <br>
 

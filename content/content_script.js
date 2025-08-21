@@ -5,7 +5,7 @@ let text_req_last = null; //儲存最後一次輸入
 // 監聽來自 background 的訊息，並顯示翻譯結果
 browser.runtime.onMessage.addListener((message) => {
   if (message.type === 'SHOW_LOADING_PANEL') {
-    //如果
+    //如果有原文就存入 last request裏面
     if (message.originalText){ text_req_last = message.originalText; }
     // 收到「顯示載入中」指令，呼叫函式並傳入特殊內容
     showTranslationPanel("等待回應中...");
